@@ -5,9 +5,17 @@ import App from './App'
 import router from './router'
 import EllmentUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
+import '@/assets/css/reset.css'
+import MyHttpServer from '@/plugins/http.js'
+
 
 Vue.config.productionTip = false
+
+
+//适用vue插件
 Vue.use(EllmentUI)
+Vue.use(MyHttpServer)
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
