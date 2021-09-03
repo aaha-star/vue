@@ -16,6 +16,7 @@ Vue.config.productionTip = false
 Vue.use(EllmentUI)
 Vue.use(MyHttpServer)
 
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

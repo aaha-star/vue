@@ -1,12 +1,8 @@
 <template>
 <div class="login-wrap">
     <div style="margin: 20px"></div>
-    <el-form 
-    class="login-form"
-    label-position="top" 
-    label-width="80px" 
-    :model="formdata">
-    <h2>用户登录</h2>
+    <el-form class="login-form" label-position="top" label-width="80px" :model="formdata">
+        <h2>用户登录</h2>
         <el-form-item label="用户名">
             <el-input v-model="formdata.username"></el-input>
         </el-form-item>
@@ -20,32 +16,37 @@
 
 <script>
 export default {
-    data(){
+    data() {
         return {
-            formdata:{
-                username:'',
-                password:''
+            formdata: {
+                username: '',
+                password: ''
             }
         }
     },
-    methods:{
-        handleLogin(){
+    methods: {
+        async handleLogin() {
+            const res = await this.$http.post('login', this.formdata)
 
-            this.$http.post('login',this.formdata).then(res =>{
-               
-               const{
-                   data,
-                   meta:{msg,status}
-               }=res.data
+                const {
+                    data,
+                    meta: {
+                        msg,
+                        status
+                    }
+                } = res.data
 
-               if(status === 200){
-                   this.$message.success(msg)
-                   this.$route.push({name:'home'})
-               }
-               else{
-                   this.$message.warning(msg);
-               }
-            })
+                if (status === 200) {
+                    this.$message.success(msg)
+                    this.$router.push({
+                        name: 'home'
+                    })
+                } 
+                
+                else {
+                    this.$message.warning(msg);
+                }
+            
         }
     }
 
@@ -53,21 +54,23 @@ export default {
 </script>
 
 <style>
-.login-wrap{
+.login-wrap {
     height: 100%;
     background-color: #324152;
     display: flex;
     justify-content: center;
     align-items: center;
 }
-.login-wrap .login-form{
+
+.login-wrap .login-form {
     width: 400px;
-    background-color:#fff ;
+    background-color: #fff;
     border-radius: 5px;
     padding: 30px;
     z-index: 2;
 }
-.login-wrap .login-btn{
+
+.login-wrap .login-btn {
     width: 100%;
 }
 </style>
