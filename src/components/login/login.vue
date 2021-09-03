@@ -38,6 +38,9 @@ export default {
 
                 if (status === 200) {
                     this.$message.success(msg)
+                    console.log(data)
+                    localStorage.setItem('token',data.token)
+                    sessionStorage.setItem('token',data.token)
                     this.$router.push({
                         name: 'home'
                     })
