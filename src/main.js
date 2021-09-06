@@ -7,7 +7,7 @@ import EllmentUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import '@/assets/css/reset.css'
 import MyHttpServer from '@/plugins/http.js'
-
+import moment from 'moment'
 
 Vue.config.productionTip = false
 
@@ -16,6 +16,10 @@ Vue.config.productionTip = false
 Vue.use(EllmentUI)
 Vue.use(MyHttpServer)
 
+Vue.filter('fmtdate',(v)=>{
+  v=v * 1000
+  return moment(v).format('YYYY-MM-DD   HH:mm:ss')
+})
 
 /* eslint-disable no-new */
 new Vue({
