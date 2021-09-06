@@ -14,9 +14,8 @@
             </el-col>
             <el-col :span="2" class="exit_btn">
                 <div class="grid-content bg-purple">
-                    <el-button type="danger" round>退出</el-button>
+                    <el-button type="danger" round @click.prevent='handleSignout()'>退出</el-button>
                 </div>
-
             </el-col>
         </el-row>
     </el-header>
@@ -120,9 +119,22 @@ export default {
 beforeCreate(){
     const token = localStorage.getItem('token')
     if(!token){
-        this.$router.push({name:login})
+        this.$router.push({name:'login'})
+    }
+},
+
+methods:{
+    handleSignout(){
+        //1.清除token
+        localStorage.clear()
+        //2.提示退出成功
+        this.$message.success('退出成功')
+        //3.来到login组件
+        this.$router.push({name:'login'})
     }
 }
+
+
 }
 </script>
 
