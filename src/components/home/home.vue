@@ -116,7 +116,13 @@
 
 <script>
 export default {
-
+// 页面加载前验证是否有token，有的话加载页面，没有返回login页面
+beforeCreate(){
+    const token = localStorage.getItem('token')
+    if(!token){
+        this.$router.push({name:login})
+    }
+}
 }
 </script>
 
