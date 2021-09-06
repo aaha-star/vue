@@ -21,7 +21,10 @@
     </el-header>
     <el-container>
         <el-aside width="200px" class="aside">
-            <el-menu>
+            <el-menu
+            :router='true'
+            :unique-opened="true"
+            >
                 <!-- //1 -->
                 <el-submenu index="1">
                     <template slot="title">
@@ -29,7 +32,7 @@
                         <span>用户管理</span>
                     </template>
                     <el-menu-item-group>
-                        <el-menu-item index="1-2">
+                        <el-menu-item index="users">
                             <i class="el-icon-menu"></i>
                             <span>用户列表</span>
                         </el-menu-item>
@@ -106,8 +109,8 @@
                 </el-submenu>
             </el-menu>
         </el-aside>
-        <el-main class="main">Main
-            <div class="div"></div>
+        <el-main class="main">
+            <router-view></router-view> 
         </el-main>
     </el-container>
 </el-container>
@@ -119,6 +122,7 @@ export default {
 beforeCreate(){
     const token = localStorage.getItem('token')
     if(!token){
+        this.$message.warning('请先登录')
         this.$router.push({name:'login'})
     }
 },
