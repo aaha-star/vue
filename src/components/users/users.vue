@@ -51,14 +51,14 @@ export default {
 
             <el-table-column label="用户状态">
                 <template slot-scope="scope">
-                    <el-switch v-model="scope.row.msg_state" active-color="#13ce66" inactive-color='#ff4949'></el-switch>
+                    <el-switch @change ="changeMgState(scope.row)" v-model="scope.row.mg_state" active-color="#13ce66" inactive-color='#ff4949'></el-switch>
                 </template>
 
             </el-table-column>
             <el-table-column prop="address" label="用户操作">
                 <template slot-scope="scope">
-                    <el-button size="mini" plain type="primary" icon="el-icon-edit" circle @click="showEditUserDia(scope.row)"></el-button>
-                    <el-button size="mini" plain type="success" icon="el-icon-check" circle></el-button>
+                    <el-button size="mini" plain type="primary" icon="el-icon-edit" circle @click ="showEditUserDia(scope.row)"></el-button>
+                    <el-button size="mini" plain type="success" icon="el-icon-check" circle @click="showSetUserRoleDia(scope.row)"></el-button>
                     <el-button size="mini" plain type="danger" icon="el-icon-delete" circle @click="showDelUserMsgBox(scope.row.id)"></el-button>
                 </template>
             </el-table-column>
@@ -117,7 +117,29 @@ export default {
             </div>
         </el-dialog>
 
-
+        <!-- 分配角色对话框 -->
+        <el-dialog title="收货地址" :visible.sync="dialogFormVisibleRol">
+            <el-form :model="form">
+                <el-form-item label="用户名" label-width="100px">
+                    {{currUsername}}
+                </el-form-item>
+                <el-form-item label="角色" label-width="100px">
+                    {{currRoleId}}
+                    <el-select v-model="currRoleId" >
+                        <el-option label="请选择" value="-1"></el-option>
+                        <el-option :label="item.roleName" :value="item.id"
+                        v-for="(item,i) in roles" :key="i"
+                        >
+                            
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisibleRol = false">取 消</el-button>
+                <el-button type="primary" @click="setRole()">确 定</el-button>
+            </div>
+        </el-dialog>
     </el-card>
 </template>
 
@@ -139,18 +161,56 @@ data(){
         total:-1,
         dialogFormVisibleAdd:false,
         dialogFormVisibleEdit:false,
+        dialogFormVisibleRol:false,
         form:{
             username:'',
             password:'',
             email:'',
             mobile:'',
-        }
+        },
+        // 分配角色
+        currRoleId:-1,
+        currUsername:'',
+        currUserId:-1,
+        roles:[]
     }
 },
 created(){
     this.getUserList()
 },
 methods:{
+    async setRole(){
+        const res = await this.$http.put('users/'+this.currUserId+'/role',{rid:this.currRoleId})
+        console.log(res)
+
+        //关闭对话框
+        this.dialogFormVisibleRol=false
+    
+    },
+    async showSetUserRoleDia(user){
+        this.currUsername = user.username
+
+        // 给currUserId赋值
+        this.currUserId =user.id
+        this.dialogFormVisibleRol =true
+
+        const res1 =await this.$http.get('roles')
+        // 获取所有的角色
+        this.roles = res1.data.data
+
+        // 获取当前用户角色的id
+        const res = await this.$http.get('users/'+user.id)
+
+        this.currRoleId = res.data.data.rid
+        this.dialogFormVisibleRol = true
+    },
+    //修改状态
+    async changeMgState(user){
+        console .log(user)
+        const res =await this.$http.put('users/'+user.id+'/state/'+user.mg_state)
+        console.log(res)
+    },
+
     //编辑用户 - 发送请求
     async editUser(){
         const res =await this.$http.put('users/'+this.form.id,this.form)
