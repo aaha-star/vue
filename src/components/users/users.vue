@@ -3,9 +3,9 @@
 </template>
 
 <script>
-    export default {
+export default {
 
-    }
+}
 </script>
 
 <style>
@@ -25,7 +25,7 @@
         <!-- 2.搜索 -->
         <el-row class="searchRow">
             <el-col>
-                <el-input placeholder="请输入内容" v-model="query" class="inputSearch">
+                <el-input   @clear="loadUserlist()" clearable placeholder="请输入内容" v-model="query" class="inputSearch">
                     <el-button slot="append" icon="el-icon-search" @click.prevent='getUserList()'></el-button>
                 </el-input>
                 <el-button type="success">添加用户</el-button>
@@ -65,7 +65,15 @@
         </el-table>
 
         <!-- 4.分页 -->
-
+        <el-pagination 
+        @size-change="handleSizeChange" 
+        @current-change="handleCurrentChange" 
+        :current-page="pagenum" 
+        :page-sizes="[5,10,15,20]" 
+        :page-size="2" 
+        layout="total, sizes, prev, pager, next, jumper" 
+        :total="total">
+        </el-pagination>
     </el-card>
 </template>
 
@@ -82,29 +90,36 @@ data(){
     return {
         query:'',
         pagenum:1,
-        pagesize:2,
+        pagesize:5,
         userlist:[],
         total:-1,
-
-        tableData: [{
-            date: '2016-05-02',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1518 弄'
-          }, {
-            date: '2016-05-04',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1517 弄'
-          }]
     }
 },
 created(){
     this.getUserList()
 },
 methods:{
+    //清空搜索框时触发，加载所有用户列表
+    loadUserlist(){
+        this.getUserList()
+    },
+
+    //分页功能
+        handleSizeChange(val) {
+        console.log(`每页 ${val} 条`);
+        this.pagesize = val;
+        this.getUserList()
+      },
+      handleCurrentChange(val) {
+        console.log(`当前页: ${val}`);
+        this.pagenum = val
+        this.getUserList()
+      },
     // 获取用户列表的请求
     async getUserList(){
         const AUTH_TOKEN = localStorage.getItem('token')
         this.$http.defaults.headers.common['Authorization'] = AUTH_TOKEN
+        console.log(AUTH_TOKEN)
         const res=await this.$http.get('users?query='+this.query+'&pagenum='+this.pagenum+'&pagesize='+this.pagesize
         )
         console.log(res.data)
